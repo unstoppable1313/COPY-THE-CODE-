@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Copy Your Code</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+  padding:22px; font-family:Arial,Helvetica,sans-serif;
+  background:linear-gradient(145deg,#111 0%,#292929 100%); color:#fff;
+}
+.card{
+  width:min(430px,100%); padding:30px 22px 24px; border-radius:28px;
+  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 22px 60px rgba(0,0,0,.45); text-align:center;
+  backdrop-filter:blur(12px);
+}
+.badge{
+  display:inline-block; padding:7px 12px; border-radius:999px;
+  background:rgba(255,255,255,.12); font-size:12px; letter-spacing:1.5px;
+  font-weight:700; margin-bottom:15px;
+}
+h1{font-size:30px;margin:0 0 8px}
+.sub{margin:0 0 22px;color:#cfcfcf;font-size:15px}
+.code{
+  padding:18px 15px; border-radius:16px; background:#0b0b0b;
+  border:1px solid rgba(255,255,255,.12); font:14px/1.65 monospace;
+  word-break:break-all; user-select:all; color:#fff; margin-bottom:16px;
+}
+button{
+  width:100%; border:0; border-radius:16px; padding:17px;
+  font-size:17px; font-weight:800; letter-spacing:.5px; cursor:pointer;
+  color:#111; background:#fff; box-shadow:0 8px 25px rgba(0,0,0,.25);
+  transition:transform .15s,box-shadow .15s;
+}
+button:active{transform:scale(.97)}
+button.copied{background:#d7ffd9}
+.hint{margin-top:14px;color:#aaa;font-size:12px}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="badge">YOUR CODE</div>
+  <h1>Copy it in one tap</h1>
+  <p class="sub">Tap the button below to copy the code.</p>
+
+  <div class="code" id="code">05b83c2dce677cbee9a6c6fcee6f09cc1dbf7c9520e59bfe219454d2abbd2fbc06</div>
+
+  <button id="copyBtn">COPY CODE</button>
+  <div class="hint" id="status">Ready to copy</div>
+</div>
+
+<script>
+const code=document.getElementById('code').textContent.trim();
+const btn=document.getElementById('copyBtn');
+const status=document.getElementById('status');
+
+btn.addEventListener('click',async()=>{
+  let ok=false;
+  try{
+    await navigator.clipboard.writeText(code);
+    ok=true;
+  }catch(e){
+    try{
+      const t=document.createElement('textarea');
+      t.value=code;t.style.position='fixed';t.style.opacity='0';
+      document.body.appendChild(t);t.focus();t.select();
+      ok=document.execCommand('copy');t.remove();
+    }catch(e){}
+  }
+  if(ok){
+    btn.textContent='✓ COPIED!';
+    btn.classList.add('copied');
+    status.textContent='The code is now on your clipboard.';
+    setTimeout(()=>{
+      btn.textContent='COPY CODE';
+      btn.classList.remove('copied');
+      status.textContent='Ready to copy';
+    },2500);
+  }else{
+    status.textContent='Copy was blocked by the browser. Press and hold the code to copy it.';
+  }
+});
+</script>
+</body>
+</html>
